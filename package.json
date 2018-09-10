@@ -1,0 +1,34 @@
+{
+  "name": "homebridge-aqualinkd",
+  "version": "0.0.1",
+  "description": "aqualinkd Platform plugin for homebridge: https://github.com/sfeakes/homebridge-aqualinkd",
+  "license": "ISC",
+  "keywords": [
+    "homebridge-plugin",
+    "pool",
+    "jandy",
+    "aqualink",
+    "aqualinkd",
+    "homebridge",
+    "homekit"
+  ],
+  "author": {
+    "name": "Shaun Feakes"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sfeakes/homebridge-aqualinkd.git"
+  },
+  "bugs": {
+    "url": "http://github.com/sfeakes/homebridge-aqualinkd/issues"
+  },
+  "engines": {
+    "node": ">=4.0.0",
+    "homebridge": ">=0.4.40"
+  },
+  "dependencies": {
+    "inherits": "^2.0.1",
+    "mqtt": "^2.15.0",
+    "request": "^2.81.0"
+  }
+}
