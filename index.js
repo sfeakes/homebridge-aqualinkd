@@ -1,4 +1,3 @@
-
 // Example ~/.homebridge/config.json content:
 //
 // {
@@ -15,9 +14,10 @@
 //         "server": "127.0.0.1", // servername/ip running aqualinkd
 //         "port": "80",
 //         "mqtt": {
- //              "host": "mqtt-server.name",  // servername/ip running MQTT
+//              "host": "mqtt-server.name",  // servername/ip running MQTT
 //               "port": 1883,
-//               "topic": "aqualinkd"
+//               "topic": "aqualinkd",
+//               "excludedDevices": []
 //         }
 //    }],
 //  "accessories":[]
@@ -33,7 +33,7 @@ var AqualinkdAccessory = require('./lib/aqualinkd_accessory.js');
 
 const util = require('util');
 
-module.exports = function(homebridge) {
+module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
   Types = homebridge.hapLegacyTypes;
@@ -46,7 +46,7 @@ function AqualinkdPlatform(log, config, api) {
   this.isSynchronizingAccessories = false;
   this.accessories = [];
   this.forceLog = log;
-  this.log = function() {
+  this.log = function () {
     if (typeof process.env.DEBUG !== 'undefined') {
       log(util.format.apply(this, arguments));
     }
@@ -77,8 +77,8 @@ function AqualinkdPlatform(log, config, api) {
   Aqualink.initialize(this.ssl, requestHeaders);
 
   if (this.api) {
-    this.api.once("didFinishLaunching", function() {
-      var syncDevices = function() {
+    this.api.once("didFinishLaunching", function () {
+      var syncDevices = function () {
         this.synchronizeAccessories();
         setTimeout(syncDevices.bind(this), 600000); // Sync devices every 10 minutes
         //setTimeout(syncDevices.bind(this), 6000); // Sync devices every 1 minutes
@@ -93,96 +93,108 @@ function AqualinkdPlatform(log, config, api) {
 }
 
 AqualinkdPlatform.prototype = {
-  synchronizeAccessories : function() {
+  synchronizeAccessories: function () {
 
     if (this.isSynchronizingAccessories) {
       return;
     }
 
     this.isSynchronizingAccessories = true;
-    // var excludedDevices = (typeof this.config.excludedDevices !== 'undefined') ? this.config.excludedDevices : [];
+    var excludedDevices = (typeof this.config.excludedDevices !== 'undefined') ? this.config.excludedDevices : [];
 
     Aqualink.devices(this.apiBaseURL,
-                      function(devices) {
-                        var removedAccessories = [], exclude = !1;
+      function (devices) {
+        var removedAccessories = [],
+          exclude = !1;
 
-                        for (var i = 0; i < devices.length; i++) {
-                          var device = devices[i];
-                         
-                          var existingAccessory = this.accessories.find(function(existingAccessory) { return existingAccessory.id == device.id; });
-                          
-                          if (existingAccessory) {
-                            if (device.type != existingAccessory.type) {
-                              this.log("Device " + existingAccessory.name + " has changed it's type. Recreating...");
-                              removedAccessories.push(existingAccessory);
-                              try {
-                                this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [ existingAccessory.platformAccessory ]);
-                              } catch (e) {
-                                this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
-                              }
-                            } else {/*
-                              // Since we have everything, may as well update if needed.
-                              if ( (device.state=="on"?true:false) != existingAccessory.state ) {
-                                this.log("Background update to '"+existingAccessory.id+"' state old="+existingAccessory.state+" new="+(device.state=="on"?true:false))
-                                existingAccessory.state = (device.state==1?true:false);
-                              }
+        for (var i = 0; i < devices.length; i++) {
+          var device = devices[i];
 
-                              if (device.duration != existingAccessory.duration) {
-                                this.log("Background update to '"+existingAccessory.id+"' duration old="+existingAccessory.duration+" new="+device.duration);
-                                existingAccessory.duration = device.duration;
-                              }
-                              */
-                              continue;
-                            }
-                          }
-                          // Generate a new accessory
-                          var uuid = UUID.generate(device.id);
+          var existingAccessory = this.accessories.find(function (existingAccessory) {
+            return existingAccessory.id == device.id;
+          });
 
-                          var accessory = new AqualinkdAccessory(this, false, device.id, device, uuid);
-                          this.accessories.push(accessory);
-                          this.forceLog("Registering new platform accessory! (" + accessory.name + " | " + uuid + ")");
+          // if device.id is in our ignore list, set the name to NONE.
+          // Delete it if it's existing and use else below not if
+          /*
+          if (!(excludedDevices.indexOf(device.ID) <= -1)) {
+            // If it's cached accessory now on ignore
+            if (existingAccessory) {
+              this.log("Device " + existingAccessory.name + " removed due to exclude list");
+              removedAccessories.push(existingAccessory);
+            } else {
+              this.log("Device " + device.name + " ignored due to exclude list");
+            }
+            continue;
+          }*/
+          if (existingAccessory) {
+            if (device.type != existingAccessory.type) {
+              this.log("Device " + existingAccessory.name + " has changed it's type. Recreating...");
+              removedAccessories.push(existingAccessory);
+              try {
+                this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);
+              } catch (e) {
+                this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
+              }
+            } else {
+              // Since we have everything (http device list and accessory list), could update accesories from http-device if needed.
+              continue;
+            }
+          }
+          // Generate a new accessory
+          var uuid = UUID.generate(device.id);
 
-                          try {
-                            this.api.registerPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [ accessory.platformAccessory ]);
-                          } catch (e) {
-                            this.forceLog("Could not register platform accessory! (" + accessory.name + ")" + e);
-                          }
-                          // accessory.platformAccessory.context = {device: device, uuid: uuid, eve: this.eve};
-                          accessory.platformAccessory.context = {device : device, uuid : uuid};
-                        }
+          var accessory = new AqualinkdAccessory(this, false, device.id, device, uuid);
+          this.accessories.push(accessory);
+          this.forceLog("Registering new platform accessory! (" + accessory.name + " | " + uuid + ")");
 
-                        for (var i = 0; i < this.accessories.length; i++) {
-                          var removedAccessory = this.accessories[i];
-                          var existingDevice = devices.find(function(existingDevice) { return existingDevice.idx == removedAccessory.idx; });
+          try {
+            this.api.registerPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [accessory.platformAccessory]);
+          } catch (e) {
+            this.forceLog("Could not register platform accessory! (" + accessory.name + ")" + e);
+          }
+          // accessory.platformAccessory.context = {device: device, uuid: uuid, eve: this.eve};
+          accessory.platformAccessory.context = {
+            device: device,
+            uuid: uuid
+          };
+        }
+        // delete any accessories that are not in the http device list.  Potential problem, restart aqualinkd, if pump not running no SWG will be seen
+        // then restart this, the SWG will be deleted until it's seen again.
+        for (var i = 0; i < this.accessories.length; i++) {
+          var removedAccessory = this.accessories[i];
+          var existingDevice = devices.find(function (existingDevice) {
+            return existingDevice.idx == removedAccessory.idx;
+          });
 
-                          if (!existingDevice) {
-                            removedAccessories.push(removedAccessory);
-                            try {
-                              this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [ removedAccessory.platformAccessory ]);
-                            } catch (e) {
-                              this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
-                            }
-                          }
-                        }
+          if (!existingDevice) {
+            removedAccessories.push(removedAccessory);
+            try {
+              this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [removedAccessory.platformAccessory]);
+            } catch (e) {
+              this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
+            }
+          }
+        }
 
-                        for (var i = 0; i < removedAccessories.length; i++) {
-                          var removedAccessory = removedAccessories[i];
-                          var index = this.accessories.indexOf(removedAccessory);
-                          this.accessories.splice(index, 1);
-                        }
+        for (var i = 0; i < removedAccessories.length; i++) {
+          var removedAccessory = removedAccessories[i];
+          var index = this.accessories.indexOf(removedAccessory);
+          this.accessories.splice(index, 1);
+        }
 
-                        this.isSynchronizingAccessories = false;
-                      }.bind(this),
-                      function(response, err) {
-                        Utils.LogConnectionError(this, response, err);
-                        this.isSynchronizingAccessories = false;
-                      }.bind(this));
+        this.isSynchronizingAccessories = false;
+      }.bind(this),
+      function (response, err) {
+        Utils.LogConnectionError(this, response, err);
+        this.isSynchronizingAccessories = false;
+      }.bind(this));
   },
-  configureAccessory : function(platformAccessory) {
+  configureAccessory: function (platformAccessory) {
     if (!platformAccessory.context || !platformAccessory.context.device) {
       // Remove this invalid device from the cache.
       try {
-        this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [ platformAccessory ]);
+        this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [platformAccessory]);
       } catch (e) {
         this.forceLog("Could not unregister cached platform accessory!" + e);
       }
@@ -202,20 +214,22 @@ AqualinkdPlatform.prototype = {
 
 function setupMqttConnection(platform) {
   var connectionInformation = {
-    host : (typeof platform.config.mqtt.host !== 'undefined' ? platform.config.mqtt.host : '127.0.0.1'),
-    port : (typeof platform.config.mqtt.port !== 'undefined' ? platform.config.mqtt.port : 1883),
-    topic : (typeof platform.config.mqtt.topic !== 'undefined' ? platform.config.mqtt.topic : 'aqualinkd'),
-    username : (typeof platform.config.mqtt.username !== 'undefined' ? platform.config.mqtt.username : ''),
-    password : (typeof platform.config.mqtt.password !== 'undefined' ? platform.config.mqtt.password : ''),
+    host: (typeof platform.config.mqtt.host !== 'undefined' ? platform.config.mqtt.host : '127.0.0.1'),
+    port: (typeof platform.config.mqtt.port !== 'undefined' ? platform.config.mqtt.port : 1883),
+    topic: (typeof platform.config.mqtt.topic !== 'undefined' ? platform.config.mqtt.topic : 'aqualinkd'),
+    username: (typeof platform.config.mqtt.username !== 'undefined' ? platform.config.mqtt.username : ''),
+    password: (typeof platform.config.mqtt.password !== 'undefined' ? platform.config.mqtt.password : ''),
   };
 
   platform.forceLog("MQTT Connect info : " + platform.config.mqtt.host + ":" + platform.config.mqtt.port + " | topic : " + platform.config.mqtt.topic);
 
-  var mqttError = function() {
+  var mqttError = function () {
     platform.forceLog(
-        "There was an error while getting the MQTT Hardware Device from aqualinkd.\nPlease verify that you have started aqualinkd enabeled MQTT and configured zones.");
+      "There was an error while getting the MQTT Hardware Device from aqualinkd.\nPlease verify that you have started aqualinkd enabeled MQTT and configured zones.");
   };
 
-  platform.mqtt = new Mqtt(platform, connectionInformation.host, connectionInformation.port, connectionInformation.topic,
-                           {username : connectionInformation.username, password : connectionInformation.password});
+  platform.mqtt = new Mqtt(platform, connectionInformation.host, connectionInformation.port, connectionInformation.topic, {
+    username: connectionInformation.username,
+    password: connectionInformation.password
+  });
 }
