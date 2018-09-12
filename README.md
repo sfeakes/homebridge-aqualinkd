@@ -71,13 +71,15 @@ MQTT user password would be
 ```
 Removing devices 
     "excludedDevices": ["Temperature/Spa", "Temperature/Pool", "Temperature/Air", "SWG/Percent_f"]
-
-The above list are sort of duplicates. They just the sensors and the values of those sensors are
-also shown in the equivelent thermostats.  ie :-
-"Temperature of Pool" is also shown in "Pool Heater Thermostat".
-"Temperature of Spa" is also shown in "Spa Heater Thermostat".
-"Temperature of Air" is also shown in "Freeze Protect Thermostat" *** depending on other configurations ***.
-"Salt Water Generator Percent" is als shown in the "Salt Water Generator Thermostat" *** depending on other configuration ***.
-so if you want to save realestate you can remove those sensors.
 ```
+The above list are sort of duplicates. They just the sensors and the values of those sensors are also shown in the equivelent thermostats.  ie :-
+* "Temperature of Pool" is also shown in "Pool Heater Thermostat".
+* "Temperature of Spa" is also shown in "Spa Heater Thermostat".
+* "Temperature of Air" is also shown in "Freeze Protect Thermostat" 
+* "Salt Water Generator Percent" is als shown in the "Salt Water Generator Thermostat" 
+
+So if you want to save realestate you can remove those sensors.<br>
+Note :- 
+The above being duplications will depend on other configuration options, so first time out it's best to leave excludeDevices empty until you have everything showing and configured correctly, then decide what to delete.
+
 

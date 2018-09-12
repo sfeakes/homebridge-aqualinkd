@@ -1,4 +1,5 @@
 *-lock.*
+npm_push.sh
 .gitignore
 node_modules/
 .DS_Store
