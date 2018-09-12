@@ -116,17 +116,22 @@ AqualinkdPlatform.prototype = {
 
           // if device.id is in our ignore list, set the name to NONE.
           // Delete it if it's existing and use else below not if
-          /*
-          if (!(excludedDevices.indexOf(device.ID) <= -1)) {
+          //console.log("Exclude "+excludedDevices);
+          if ( (excludedDevices.indexOf(device.id) > -1)) {
             // If it's cached accessory now on ignore
             if (existingAccessory) {
               this.log("Device " + existingAccessory.name + " removed due to exclude list");
               removedAccessories.push(existingAccessory);
+              try {
+                this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);
+              } catch (e) {
+                this.forceLog("Could not unregister platform accessory! (" + existingAccessory.name + ")" + e);
+              }
             } else {
               this.log("Device " + device.name + " ignored due to exclude list");
             }
             continue;
-          }*/
+          }
           if (existingAccessory) {
             if (device.type != existingAccessory.type) {
               this.log("Device " + existingAccessory.name + " has changed it's type. Recreating...");
@@ -134,7 +139,7 @@ AqualinkdPlatform.prototype = {
               try {
                 this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);
               } catch (e) {
-                this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
+                this.forceLog("Could not unregister platform accessory! (" + existingAccessory.name + ")" + e);
               }
             } else {
               // Since we have everything (http device list and accessory list), could update accesories from http-device if needed.

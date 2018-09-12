@@ -48,14 +48,36 @@ Example config
          "mqtt": {
                "host": "mqtt-server.name",  // <<-- servername/ip running MQTT
                "port": 1883,
-               "topic": "aqualinkd",
-               "username": "username", // <<-- Optional, delete line if no user
-               "password": "password", // <<-- Optional, delete line if no passwd
-               "excludedDevices": []
-         }
+               "topic": "aqualinkd"
+         },
+         "excludedDevices": []
     }],
   "accessories":[]
  }
+```
 
+```
+MQTT user password would be
+
+        "mqtt": {
+               "host": "mqtt-server.name",  // <<-- servername/ip running MQTT
+               "port": 1883,
+               "topic": "aqualinkd", 
+               "username": "username", // <<-- Optional, delete line if no user
+               "password": "password"  // <<-- Optional, delete line if no passwd
+         },
+```
+
+```
+Removing devices 
+    "excludedDevices": ["Temperature/Spa", "Temperature/Pool", "Temperature/Air", "SWG/Percent_f"]
+
+The above list are sort of duplicates. They just the sensors and the values of those sensors are
+also shown in the equivelent thermostats.  ie :-
+"Temperature of Pool" is also shown in "Pool Heater Thermostat".
+"Temperature of Spa" is also shown in "Spa Heater Thermostat".
+"Temperature of Air" is also shown in "Freeze Protect Thermostat" *** depending on other configurations ***.
+"Salt Water Generator Percent" is als shown in the "Salt Water Generator Thermostat" *** depending on other configuration ***.
+so if you want to save realestate you can remove those sensors.
 ```
 
