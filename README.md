@@ -37,12 +37,12 @@ Example config
          "name": "Homebridge",
          "username": "CC:21:3E:E4:DE:33", // <<-- Randomize this...
          "port": 51826,
-         "pin": "031-45-154", // <<-- Change pin
+         "pin": "031-45-154" // <<-- Change pin
       },
 
   "platforms": [{
          "platform": "aqualinkd",
-         "name": "aqualinkd",
+         "name": "AqualinkD",
          "server": "127.0.0.1", // <<-- servername/ip running aqualinkd
          "port": "80",
          "mqtt": {

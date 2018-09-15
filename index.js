@@ -134,7 +134,7 @@ AqualinkdPlatform.prototype = {
           }
           if (existingAccessory) {
             if (device.type != existingAccessory.type) {
-              this.log("Device " + existingAccessory.name + " has changed it's type. Recreating...");
+              platform.log("Device " + existingAccessory.name + " has changed it's type. Recreating...");
               removedAccessories.push(existingAccessory);
               try {
                 this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);
@@ -209,7 +209,7 @@ AqualinkdPlatform.prototype = {
     var device = platformAccessory.context.device;
     var uuid = platformAccessory.context.uuid;
 
-    console.log("Loading platform accessory! (" + device.name + " | " + uuid + ")");
+    //platform.forceLog("Loading platform accessory! (" + device.name + " | " + uuid + ")");
 
     // Generate the already cached accessory again
     var accessory = new AqualinkdAccessory(this, platformAccessory, device.id, device, uuid);
@@ -226,7 +226,7 @@ function setupMqttConnection(platform) {
     password: (typeof platform.config.mqtt.password !== 'undefined' ? platform.config.mqtt.password : ''),
   };
 
-  platform.forceLog("MQTT Connect info : " + platform.config.mqtt.host + ":" + platform.config.mqtt.port + " | topic : " + platform.config.mqtt.topic);
+  //platform.forceLog("MQTT Connect info : " + platform.config.mqtt.host + ":" + platform.config.mqtt.port + " | topic : " + platform.config.mqtt.topic);
 
   var mqttError = function () {
     platform.forceLog(
