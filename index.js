@@ -70,6 +70,8 @@ function AqualinkdPlatform(log, config, api) {
   this.mqtt = false;
   this.ssl = false;
 
+  this.firstrun=true;
+
   var requestHeaders = {};
   if (this.authorizationToken) {
     requestHeaders['Authorization'] = 'Basic ' + this.authorizationToken;
@@ -80,8 +82,11 @@ function AqualinkdPlatform(log, config, api) {
     this.api.once("didFinishLaunching", function () {
       var syncDevices = function () {
         this.synchronizeAccessories();
-        setTimeout(syncDevices.bind(this), 600000); // Sync devices every 10 minutes
-        //setTimeout(syncDevices.bind(this), 6000); // Sync devices every 1 minutes
+        if (this.firstrun) {
+          this.firstrun = false;
+          setTimeout(syncDevices.bind(this), 60000); // Sync 1 min after initial load.
+        } else
+          setTimeout(syncDevices.bind(this), 600000); // Sync devices every 10 minutes
       }.bind(this);
       syncDevices();
 
@@ -98,6 +103,8 @@ AqualinkdPlatform.prototype = {
     if (this.isSynchronizingAccessories) {
       return;
     }
+
+    this.log("Synchronizing Accessories from AqualinkD");
 
     this.isSynchronizingAccessories = true;
     var excludedDevices = (typeof this.config.excludedDevices !== 'undefined') ? this.config.excludedDevices : [];
@@ -134,7 +141,7 @@ AqualinkdPlatform.prototype = {
           }
           if (existingAccessory) {
             if (device.type != existingAccessory.type) {
-              platform.log("Device " + existingAccessory.name + " has changed it's type. Recreating...");
+              this.forceLog("Device " + existingAccessory.name + " has changed it's type. Recreating...");
               removedAccessories.push(existingAccessory);
               try {
                 this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);

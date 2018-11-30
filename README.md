@@ -72,7 +72,7 @@ MQTT user password would be
 Removing devices 
     "excludedDevices": ["Temperature/Spa", "Temperature/Pool", "Temperature/Air", "SWG/Percent_f"]
 ```
-The above list are sort of duplicates. They just the sensors and the values of those sensors are also shown in the equivelent thermostats.  ie :-
+The above list are sort of duplicates. They are the sensors and the values that are also shown in the equivelent thermostats.  ie :-
 * "Temperature of Pool" is also shown in "Pool Heater Thermostat".
 * "Temperature of Spa" is also shown in "Spa Heater Thermostat".
 * "Temperature of Air" is also shown in "Freeze Protect Thermostat" 
