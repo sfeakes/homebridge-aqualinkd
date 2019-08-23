@@ -16,7 +16,7 @@ See AqualinkD and AqualinkD Wiki for full information.
 ## Installation
 
 1) Install [AqualinkD](https://github.com/sfeakes/AqualinkD)
-2) Install [Homebridge](https://github.com/nfarina/homebridge) on any maching
+2) Install [Homebridge](https://github.com/nfarina/homebridge) on any machine
 3) Install this on same machine as homebridge.
 
 ```
@@ -80,6 +80,9 @@ The above list are sort of duplicates. They are the sensors and the values that 
 * "Temperature of Spa" is also shown in "Spa Heater Thermostat".
 * "Temperature of Air" is also shown in "Freeze Protect Thermostat" 
 * "Salt Water Generator Percent" is als shown in the "Salt Water Generator Thermostat" 
+For a full list of devices from your AqualinkD install that can be removed use the below URL and use the `id:` value.
+```http://aqualinkd.ip.address/?command=homebridge```
+
 
 So if you want to save realestate you can remove those sensors.<br>
 Note :- 
