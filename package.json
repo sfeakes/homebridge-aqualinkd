@@ -1,6 +1,6 @@
 {
   "name": "homebridge-aqualinkd",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "aqualinkd Platform plugin for homebridge: https://github.com/sfeakes/homebridge-aqualinkd",
   "license": "ISC",
   "keywords": [
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "inherits": "^2.0.1",
-    "mqtt": "^2.15.0",
+    "mqtt": "^2.18.8",
     "request": "^2.81.0"
   }
 }

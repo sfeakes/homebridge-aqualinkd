@@ -25,7 +25,6 @@
 //
 
 
-
 var Aqualink = require('./lib/aqualink.js').Aqualink;
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
@@ -176,7 +175,7 @@ AqualinkdPlatform.prototype = {
         for (var i = 0; i < this.accessories.length; i++) {
           var removedAccessory = this.accessories[i];
           var existingDevice = devices.find(function (existingDevice) {
-            return existingDevice.idx == removedAccessory.idx;
+            return existingDevice.id == removedAccessory.id;
           });
 
           if (!existingDevice) {
