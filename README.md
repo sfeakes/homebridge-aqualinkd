@@ -80,7 +80,7 @@ The above list are sort of duplicates. They are the sensors and the values that 
 * "Temperature of Spa" is also shown in "Spa Heater Thermostat".
 * "Temperature of Air" is also shown in "Freeze Protect Thermostat" 
 * "Salt Water Generator Percent" is als shown in the "Salt Water Generator Thermostat" 
-For a full list of devices from your AqualinkD install that can be removed use the below URL and use the `id:` value.
+* For a full list of devices from your AqualinkD install that can be removed use the below URL and use the `id:` value.
 ```http://aqualinkd.ip.address/?command=homebridge```
 
 
