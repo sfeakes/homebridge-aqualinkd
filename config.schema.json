@@ -1,0 +1,121 @@
+{
+	"pluginAlias": "AqualinkD",
+	"pluginType": "platform",
+	"singular": false,
+	"headerDisplay": "Homebridge plugin for AqualinkD",
+	"footerDisplay": "For help visit [Homebridge-AqualinkD on GitHub](https://github.com/sfeakes/homebridge-aqualinkd) or [AqualinkD on GitHub](https://github.com/sfeakes/AqualinkD)",
+	"schema": {
+		"type": "object",
+		"properties": {
+			"name": {
+				"title": "Name",
+				"type": "string",
+				"default": "AqualinkD",
+				"required": true
+			},
+			"server": {
+				"title": "Server",
+				"type": "string",
+				"default": "127.0.0.1",
+				"required": true,
+				"description": "Server running AqualinkD"
+			},
+			"port": {
+				"title": "Port",
+				"type": "string",
+				"default": "80",
+				"required": true,
+				"description": "AqualinkD port"
+			},
+			"mqtt": {
+			    "type": "object",
+			    "properties": {
+			    "host": {
+					"title": "MQTT Server",
+					"type": "string",
+					"default": "127.0.0.1",
+					"required": true,
+					"description": "Server running MQTT"
+				  },
+				  "port": {
+					"title": "MQTT Port",
+					"type": "string",
+					"default": "1883",
+					"required": true,
+					"description": "Port for MQTT server"
+				  },
+				  "topic": {
+					"title": "MQTT Topic",
+					"type": "string",
+					"default": "aqualinkd",
+					"required": true,
+					"description": "MQTT topic AqualinkD server uses"
+				  },
+				  "username": {
+                    "type": "string",
+                    "required": false,
+                    "title": "Username",
+                    "description": "Username for MQTT server (optional)"
+                  },
+                  "password": {
+                    "type": "string",
+                    "required": false,
+                    "title": "Password",
+                    "description": "Password for MQTT server (optional)"
+                  }
+			    }
+			},
+			"excludedDevices": {
+				"title": "Exluded Devices",
+				"type": "array",
+				"items": {
+					"title": "Excluded Device Name",
+					"type": "string"
+				}
+			
+			}
+		}
+	},
+	"form": [
+		"name", {
+			"type": "flex",
+			"items": [
+				"server",
+				"port",
+				"mqtt.host",
+				"mqtt.port",
+				"mqtt.topic",
+				"mqtt.username",
+				"mqtt.password"
+			]
+		}, {
+			"type": "fieldset",
+			"title": "Exclude Devices",
+			"expandable": true,
+			"expanded": false,
+			"items": [{
+					"type": "help",
+					"helpvalue": "<h6>Exclude Devices</h6><em class='primary-text'>To prevent certain aqualinkd devices from showing up in HomeBridge, add name of the device.</em><br>You can use this url (http://<i>aqualinkd_server_ip</i>/api/devices) to get a list of devices, and put the id below"
+				}, {
+					"nodescription": true,
+					"notitle": true,
+					"key": "excludedDevices",
+					"type": "array",
+					"items": [{
+							"type": "div",
+							"displayFlex": true,
+							"flex-direction": "row",
+							"items": [{
+									"key": "excludedDevices[]",
+									"flex": "1 1 50px",
+									"notitle": true,
+									"placeholder": "Enter device name..."
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
