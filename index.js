@@ -65,7 +65,7 @@ function AqualinkdPlatform(log, config, api) {
   }
   this.port = config.port;
   this.api = api;
-  this.apiBaseURL = "http://" + this.server + ":" + this.port + "/?";
+  this.apiBaseURL = "http://" + this.server + ":" + this.port + "";
   this.mqtt = false;
   this.ssl = false;
 
