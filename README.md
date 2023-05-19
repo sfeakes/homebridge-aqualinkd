@@ -13,24 +13,48 @@ http://aqualinkd.freeforums.net
 
 See AqualinkD and AqualinkD Wiki for full information.
 
-## Installation
+## Installation prerequisites
 
 1) Install [AqualinkD](https://github.com/sfeakes/AqualinkD)
 2) Install [Homebridge](https://github.com/nfarina/homebridge) on any machine
-3) Install this on same machine as homebridge.
+3) Optional install [homebridge-config-ui-x](https://github.com/oznu/homebridge-config-ui-x)
+
+## Installation
+
+**Option 1: Install via Homebridge Config UI X:**
+
+ 1. Navigate to the Plugins page in in [homebridge-config-ui-x](https://github.com/oznu/homebridge-config-ui-x).
+ 2. Search for "aqualinkd" and install homebridge-aqualinkd.
+
+**Option 2: Manually Install:**
+ 1. Install this on same machine as homebridge.
 
 ```
 sudo npm install -g homebridge-aqualinkd
 ```
 
 ## Update
+
+**Option 1: Update via Homebridge Config UI X:**
+
+ 1. Navigate to the Plugins page in [homebridge-config-ui-x](https://github.com/oznu/homebridge-config-ui-x).
+ 2. Click the Update button for the AqualinkD plugin.
+
+**Option 2: Manually Update:**
 ```
 sudo npm update -g homebridge-aqualinkd
 ```
 
 ## Configuration
 
+**Option 1: Configuration via Homebridge Config UI X:**
 
+ 1. Navigate to the Plugins page in homebridge-config-ui-x.
+ 2. Click the Settings button for the AqualinkD plugin.
+
+**Option 2: Manually Configuration:**
+
+Edit homebridge config.json<br>
 Example config
 ```
 // Example ~/.homebridge/config.json content:
@@ -44,7 +68,7 @@ Example config
       },
 
   "platforms": [{
-         "platform": "aqualinkd",
+         "platform": "AqualinkD",
          "name": "AqualinkD",
          "server": "127.0.0.1", // <<-- servername/ip running aqualinkd
          "port": "80",
@@ -81,7 +105,7 @@ The above list are sort of duplicates. They are the sensors and the values that 
 * "Temperature of Air" is also shown in "Freeze Protect Thermostat" 
 * "Salt Water Generator Percent" is als shown in the "Salt Water Generator Thermostat" 
 * For a full list of devices from your AqualinkD install that can be removed use the below URL and use the `id:` value.
-```http://aqualinkd.ip.address/?command=homebridge```
+```http://aqualinkd.ip.address:port/api/homebridge```
 
 
 So if you want to save realestate you can remove those sensors.<br>

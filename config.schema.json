@@ -16,7 +16,7 @@
 			"server": {
 				"title": "Server",
 				"type": "string",
-				"default": "127.0.0.1",
+				"default": "aqualinkd.local",
 				"required": true,
 				"description": "Server running AqualinkD"
 			},
@@ -70,7 +70,8 @@
 				"type": "array",
 				"items": {
 					"title": "Excluded Device Name",
-					"type": "string"
+					"type": "string",
+					"default": "SWG/Percent_f"
 				}
 			
 			}

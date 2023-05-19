@@ -24,6 +24,8 @@
 // }
 //
 
+var pluginName = "homebridge-aqualinkd";
+var platformName = "AqualinkD";
 
 var Aqualink = require('./lib/aqualink.js').Aqualink;
 var Mqtt = require('./lib/mqtt.js').Mqtt;
@@ -38,7 +40,7 @@ module.exports = function (homebridge) {
   Types = homebridge.hapLegacyTypes;
   UUID = homebridge.hap.uuid;
 
-  homebridge.registerPlatform("homebridge-aqualinkd", "aqualinkd", AqualinkdPlatform, true);
+  homebridge.registerPlatform(pluginName, "AqualinkD", AqualinkdPlatform, true);
 };
 
 function AqualinkdPlatform(log, config, api) {
@@ -129,7 +131,7 @@ AqualinkdPlatform.prototype = {
               this.log("Device " + existingAccessory.name + " removed due to exclude list");
               removedAccessories.push(existingAccessory);
               try {
-                this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);
+                this.api.unregisterPlatformAccessories(pluginName, platformName, [existingAccessory.platformAccessory]);
               } catch (e) {
                 this.forceLog("Could not unregister platform accessory! (" + existingAccessory.name + ")" + e);
               }
@@ -143,7 +145,7 @@ AqualinkdPlatform.prototype = {
               this.forceLog("Device " + existingAccessory.name + " has changed it's type. Recreating...");
               removedAccessories.push(existingAccessory);
               try {
-                this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [existingAccessory.platformAccessory]);
+                this.api.unregisterPlatformAccessories(pluginName, platformName, [existingAccessory.platformAccessory]);
               } catch (e) {
                 this.forceLog("Could not unregister platform accessory! (" + existingAccessory.name + ")" + e);
               }
@@ -160,7 +162,7 @@ AqualinkdPlatform.prototype = {
           this.forceLog("Registering new platform accessory! (" + accessory.name + " | " + uuid + ")");
 
           try {
-            this.api.registerPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [accessory.platformAccessory]);
+            this.api.registerPlatformAccessories(pluginName, platformName, [accessory.platformAccessory]);
           } catch (e) {
             this.forceLog("Could not register platform accessory! (" + accessory.name + ")" + e);
           }
@@ -180,8 +182,9 @@ AqualinkdPlatform.prototype = {
 
           if (!existingDevice) {
             removedAccessories.push(removedAccessory);
+            this.forceLog("Un-registering platform accessory! (" + accessory.name + ")" + e);
             try {
-              this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [removedAccessory.platformAccessory]);
+              this.api.unregisterPlatformAccessories(pluginName, platformName, [removedAccessory.platformAccessory]);
             } catch (e) {
               this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
             }
@@ -205,7 +208,7 @@ AqualinkdPlatform.prototype = {
     if (!platformAccessory.context || !platformAccessory.context.device) {
       // Remove this invalid device from the cache.
       try {
-        this.api.unregisterPlatformAccessories("homebridge-aqualinkd", "aqualinkd", [platformAccessory]);
+        this.api.unregisterPlatformAccessories(pluginName, platformName, [platformAccessory]);
       } catch (e) {
         this.forceLog("Could not unregister cached platform accessory!" + e);
       }
@@ -216,6 +219,7 @@ AqualinkdPlatform.prototype = {
     var uuid = platformAccessory.context.uuid;
 
     //platform.forceLog("Loading platform accessory! (" + device.name + " | " + uuid + ")");
+    this.forceLog("Loading platform accessory [" + device.name + "]");
 
     // Generate the already cached accessory again
     var accessory = new AqualinkdAccessory(this, platformAccessory, device.id, device, uuid);
