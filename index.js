@@ -181,12 +181,13 @@ AqualinkdPlatform.prototype = {
           });
 
           if (!existingDevice) {
+            var name = removedAccessory.name;
             removedAccessories.push(removedAccessory);
-            this.forceLog("Un-registering platform accessory! (" + accessory.name + ")" + e);
+            this.forceLog("Un-registering platform accessory! (" + name + ")");
             try {
               this.api.unregisterPlatformAccessories(pluginName, platformName, [removedAccessory.platformAccessory]);
             } catch (e) {
-              this.forceLog("Could not unregister platform accessory! (" + removedAccessory.name + ")" + e);
+              this.forceLog("Could not unregister platform accessory! (" + name + ")" + e);
             }
           }
         }
