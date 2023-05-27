@@ -21,9 +21,9 @@ Example
             "platform": "AqualinkD"
         }
 ```
-## v0.2.8 (2023-06-21)
+## v0.2.8 (2023-06-27)
 ### Featured Changes
-* Fixed node.js v18 issue where ipv6 address would get resolved from localhost rather than ipv4 address. (Only issue if AqualinkD service is on same machine as Homebridge.)
+* Fixed node.js v18 issue where ipv6 address would get resolved from localhost rather than ipv4 address. (Only issue if AqualinkD service is running on the same machine as Homebridge.)
 
 ## v0.2.7 (2023-06-21)
 ### Featured Changes
