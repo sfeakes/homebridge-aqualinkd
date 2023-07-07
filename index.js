@@ -84,7 +84,7 @@ function AqualinkdPlatform(log, config, api) {
       var syncDevices = function () {
         this.synchronizeAccessories();
         if (this.firstrun) {
-          //this.firstrun = false; // NSF TAKE THIS OUT. DEBUG ONLY
+          this.firstrun = false;
           setTimeout(syncDevices.bind(this), 60000); // Sync 1 min after initial load.
         } else
           setTimeout(syncDevices.bind(this), 600000); // Sync devices every 10 minutes

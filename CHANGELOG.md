@@ -22,7 +22,7 @@ Example
         }
 ```
 
-## v0.2.9 (2023-06-29)
+## v0.3.1 (2023-07-07)
 ### Featured Changes
 * Few changes to check values that are outside the limits of homekit.
 * Added config param `no_delete_on_sync`. This will only allow add & modify (no delete), when syncing accessories with AqualinkD
