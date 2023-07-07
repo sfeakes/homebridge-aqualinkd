@@ -21,9 +21,15 @@ Example
             "platform": "AqualinkD"
         }
 ```
+
+## v0.2.9 (2023-06-29)
+### Featured Changes
+* Few changes to check values that are outside the limits of homekit.
+* Added config param `no_delete_on_sync`. This will only allow add & modify (no delete), when syncing accessories with AqualinkD
+
 ## v0.2.8 (2023-06-27)
 ### Featured Changes
-* Fixed node.js v18 issue where ipv6 address would get resolved from localhost rather than ipv4 address. (Only issue if AqualinkD service is running on the same machine as Homebridge.)
+* Fixed node.js v18 issue where ipv6 address would get resolved from localhost rather than ipv4 address. (Only an issue if AqualinkD service is running on the same machine as Homebridge.)
 
 ## v0.2.7 (2023-06-21)
 ### Featured Changes

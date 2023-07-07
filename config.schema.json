@@ -65,6 +65,13 @@
                   }
 			    }
 			},
+			"no_delete_on_sync": {
+				"title": "No delete on sync",
+				"type": "boolean",
+				"default": false,
+				"required": false,
+				"description": "Do not delete accessories when syncing"
+			},
 			"excludedDevices": {
 				"title": "Exluded Devices",
 				"type": "array",
@@ -87,7 +94,8 @@
 				"mqtt.port",
 				"mqtt.topic",
 				"mqtt.username",
-				"mqtt.password"
+				"mqtt.password",
+				"no_delete_on_sync"
 			]
 		}, {
 			"type": "fieldset",

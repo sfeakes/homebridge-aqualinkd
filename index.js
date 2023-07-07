@@ -84,7 +84,7 @@ function AqualinkdPlatform(log, config, api) {
       var syncDevices = function () {
         this.synchronizeAccessories();
         if (this.firstrun) {
-          this.firstrun = false;
+          //this.firstrun = false; // NSF TAKE THIS OUT. DEBUG ONLY
           setTimeout(syncDevices.bind(this), 60000); // Sync 1 min after initial load.
         } else
           setTimeout(syncDevices.bind(this), 600000); // Sync devices every 10 minutes
@@ -172,22 +172,23 @@ AqualinkdPlatform.prototype = {
             uuid: uuid
           };
         }
-        // delete any accessories that are not in the http device list.  Potential problem, restart aqualinkd, if pump not running no SWG will be seen
-        // then restart this, the SWG will be deleted until it's seen again.
-        for (var i = 0; i < this.accessories.length; i++) {
-          var removedAccessory = this.accessories[i];
-          var existingDevice = devices.find(function (existingDevice) {
-            return existingDevice.id == removedAccessory.id;
-          });
+        // delete any accessories that are not in the http device list.  (Default to deleting unless config is set)
+        if ( (typeof this.config.no_delete_on_sync === 'undefined') || (this.config.no_delete_on_sync == false) ) {
+          for (var i = 0; i < this.accessories.length; i++) {
+            var removedAccessory = this.accessories[i];
+            var existingDevice = devices.find(function (existingDevice) {
+              return existingDevice.id == removedAccessory.id;
+            });
 
-          if (!existingDevice) {
-            var name = removedAccessory.name;
-            removedAccessories.push(removedAccessory);
-            this.forceLog("Un-registering platform accessory! (" + name + ")");
-            try {
-              this.api.unregisterPlatformAccessories(pluginName, platformName, [removedAccessory.platformAccessory]);
-            } catch (e) {
-              this.forceLog("Could not unregister platform accessory! (" + name + ")" + e);
+            if (!existingDevice) {
+              var name = removedAccessory.name;
+              removedAccessories.push(removedAccessory);
+              this.forceLog("Un-registering platform accessory! (" + name + ")");
+              try {
+                this.api.unregisterPlatformAccessories(pluginName, platformName, [removedAccessory.platformAccessory]);
+              } catch (e) {
+                this.forceLog("Could not unregister platform accessory! (" + name + ")" + e);
+              }
             }
           }
         }
