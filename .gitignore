@@ -1,9 +1,0 @@
-*-lock.*
-npm_push.sh
-.gitignore
-node_modules/
-node_modules.old/
-node_modules.blank/
-.DS_Store
-.vscode
-*.old
