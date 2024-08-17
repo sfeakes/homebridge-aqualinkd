@@ -30,6 +30,8 @@ var platformName = "AqualinkD";
 var Aqualink = require('./lib/aqualink.js').Aqualink;
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
+var Constants = require('./lib/constants.js');
+
 var AqualinkdAccessory = require('./lib/aqualinkd_accessory.js');
 
 const util = require('util');
@@ -117,6 +119,15 @@ AqualinkdPlatform.prototype = {
 
         for (var i = 0; i < devices.length; i++) {
           var device = devices[i];
+
+          /* NSF This is not working, it's to add a dimmer light type 
+          if (device.type == Constants.adDeviceSwitch && device.type_ext == Constants.adDevicePrgSwitch && device.Light_Type == "6") {
+            this.log("Device " + device.name + " changing to dimmer");
+            device.type = Constants.adDeviceDimmer;
+          } else {
+            this.log("Device " + device.name + " type " + device.type);
+          }
+          */
 
           var existingAccessory = this.accessories.find(function (existingAccessory) {
             return existingAccessory.id == device.id;
