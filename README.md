@@ -74,6 +74,8 @@ Example config
                "port": 1883,
                "topic": "aqualinkd"
          },
+         "VSP_as_Fan": true,
+         "no_delete_on_sync": true,
          "excludedDevices": []
     }],
   "accessories":[]

@@ -32,6 +32,9 @@ var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
 var Constants = require('./lib/constants.js');
 
+const packageInfo = require('./package.json');
+//const packageVersion = packageInfo.version;
+
 var AqualinkdAccessory = require('./lib/aqualinkd_accessory.js');
 
 const util = require('util');
@@ -39,8 +42,10 @@ const util = require('util');
 module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
+  //Characteristic = homebridge.api.hap.Characteristic;
   Types = homebridge.hapLegacyTypes;
   UUID = homebridge.hap.uuid;
+  packageVersion = packageInfo.version;
 
   homebridge.registerPlatform(pluginName, "AqualinkD", AqualinkdPlatform, true);
 };
@@ -54,6 +59,8 @@ function AqualinkdPlatform(log, config, api) {
       log(util.format.apply(this, arguments));
     }
   };
+
+  log.info(packageInfo.name+" v"+packageInfo.version);
 
   this.config = config;
   try {
@@ -75,11 +82,13 @@ function AqualinkdPlatform(log, config, api) {
 
   this.firstrun=true;
 
+
+
   var requestHeaders = {};
   if (this.authorizationToken) {
     requestHeaders['Authorization'] = 'Basic ' + this.authorizationToken;
   }
-  Aqualink.initialize(this.ssl, requestHeaders);
+  Aqualink.initialize(this, this.ssl, requestHeaders);
 
   if (this.api) {
     this.api.once("didFinishLaunching", function () {
@@ -113,25 +122,42 @@ AqualinkdPlatform.prototype = {
     var excludedDevices = (typeof this.config.excludedDevices !== 'undefined') ? this.config.excludedDevices : [];
 
     Aqualink.devices(this.apiBaseURL,
-      function (devices) {
+      function (devices, aqVersion = "0.0.0") {
         var removedAccessories = [],
-          exclude = !1;
+            exclude = !1;
+        
+        var version = Utils.VersionString2Int(aqVersion);  
+        this.log("AqualinkD version " + aqVersion + " int "+version);
 
         for (var i = 0; i < devices.length; i++) {
           var device = devices[i];
 
-          /* NSF This is not working, it's to add a dimmer light type 
-          if (device.type == Constants.adDeviceSwitch && device.type_ext == Constants.adDevicePrgSwitch && device.Light_Type == "6") {
-            this.log("Device " + device.name + " changing to dimmer");
-            device.type = Constants.adDeviceDimmer;
-          } else {
-            this.log("Device " + device.name + " type " + device.type);
+        
+          /* Change vps pump to fan */
+          // Check version > 2.5.0 
+          if ( (version >= 20500) && (typeof this.config.VSP_as_Fan !== 'undefined') && (this.config.VSP_as_Fan == true) ) {
+            if (device.type == Constants.adDeviceSwitch && device.hasOwnProperty("type_ext") && device.type_ext == Constants.adDeviceSwitchVSP) {
+              device.type = Constants.adDeviceVSPfan;
+              this.log("Device " + device.name + " changing to Fan");
+            }
           }
-          */
+          
+          /* Change colorlight (dimmer) to dimmer light */
+          // No need to check version, sine type_ext=light_dimmer was only introduced in aqualinkd versions that support dimmer
+          if ( device.type == Constants.adDeviceSwitch && device.hasOwnProperty("type_ext") && device.type_ext == Constants.adDeviceDimmer){
+            device.type = Constants.adDeviceDimmer;
+            this.log("Device " + device.name + " changing to Dimmer");
+          }
 
           var existingAccessory = this.accessories.find(function (existingAccessory) {
             return existingAccessory.id == device.id;
           });
+
+          if (existingAccessory) {
+            this.log("Device " + device.name + " is "+device.type+" existing is "+existingAccessory.type);
+          } else {
+            this.log("Device " + device.name + " is "+device.type+" NO existing device ");
+          }
 
           // if device.id is in our ignore list, set the name to NONE.
           // Delete it if it's existing and use else below not if
@@ -157,6 +183,8 @@ AqualinkdPlatform.prototype = {
               removedAccessories.push(existingAccessory);
               try {
                 this.api.unregisterPlatformAccessories(pluginName, platformName, [existingAccessory.platformAccessory]);
+
+                this.api.updatePlatformAccessories([existingAccessory.platformAccessory]);
               } catch (e) {
                 this.forceLog("Could not unregister platform accessory! (" + existingAccessory.name + ")" + e);
               }
@@ -170,7 +198,7 @@ AqualinkdPlatform.prototype = {
 
           var accessory = new AqualinkdAccessory(this, false, device.id, device, uuid);
           this.accessories.push(accessory);
-          this.forceLog("Registering new platform accessory! (" + accessory.name + " | " + uuid + ")");
+          this.forceLog("Registering new platform accessory! (" + accessory.name + " | " + device.type + " | " + uuid + ")");
 
           try {
             this.api.registerPlatformAccessories(pluginName, platformName, [accessory.platformAccessory]);

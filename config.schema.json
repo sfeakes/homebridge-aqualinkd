@@ -11,14 +11,15 @@
 				"title": "Name",
 				"type": "string",
 				"default": "AqualinkD",
-				"required": true
+				"required": true,
+				"description": "Plugin name (AqualinkD)"
 			},
 			"server": {
 				"title": "Server",
 				"type": "string",
 				"default": "aqualinkd.local",
 				"required": true,
-				"description": "Server running AqualinkD"
+				"description": "Server (name or ip) running AqualinkD"
 			},
 			"port": {
 				"title": "Port",
@@ -35,7 +36,7 @@
 					"type": "string",
 					"default": "127.0.0.1",
 					"required": true,
-					"description": "Server running MQTT"
+					"description": "Server (name or ip) running MQTT"
 				  },
 				  "port": {
 					"title": "MQTT Port",
@@ -65,6 +66,13 @@
                   }
 			    }
 			},
+			"VSP_as_Fan": {
+				"title": "Use Fan for Variable Speed Pumps",
+				"type": "boolean",
+				"default": false,
+				"required": false,
+				"description": "Pumps are switches by default, using Fan allows for RPM change (Using %)"
+			},
 			"no_delete_on_sync": {
 				"title": "No delete on sync",
 				"type": "boolean",
@@ -75,12 +83,11 @@
 			"excludedDevices": {
 				"title": "Exluded Devices",
 				"type": "array",
-				"items": {
+				"items":  [ {
 					"title": "Excluded Device Name",
 					"type": "string",
 					"default": "SWG/Percent_f"
-				}
-			
+			    } ]
 			}
 		}
 	},
@@ -95,6 +102,7 @@
 				"mqtt.topic",
 				"mqtt.username",
 				"mqtt.password",
+				"VSP_as_Fan",
 				"no_delete_on_sync"
 			]
 		}, {

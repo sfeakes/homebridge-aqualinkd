@@ -1,5 +1,14 @@
 # Change Log
 
+## v0.3.5 (2024-10-12)
+### Featured Changes
+* Must use AqualinkD 2.5.0 for the below to work.
+* Added option to use Fan for Variable Speed Pump (use config to enable : "VSP_as_Fan": true).
+* Added Light Dimmer for Dimmable Lights. (use aqualinkd.conf to enable : buton_??_light_type=11)
+
+## v0.3.4 (2024-08-18)
+### Featured Changes
+* Housekeeping for Homebridge V2.
 
 ## v0.3.3 (2024-08-17)
 ### Featured Changes
