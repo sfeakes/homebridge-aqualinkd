@@ -82,6 +82,9 @@ function AqualinkdPlatform(log, config, api) {
 
   this.firstrun=true;
 
+  this.isVSPasFanEnabled=false;
+  this.isDimmerEnabled=false;
+
 
 
   var requestHeaders = {};
@@ -139,6 +142,7 @@ AqualinkdPlatform.prototype = {
             if (device.type == Constants.adDeviceSwitch && device.hasOwnProperty("type_ext") && device.type_ext == Constants.adDeviceSwitchVSP) {
               device.type = Constants.adDeviceVSPfan;
               this.log("Device " + device.name + " changing to Fan");
+              this.isVSPasFanEnabled=true;
             }
           }
           
@@ -147,6 +151,7 @@ AqualinkdPlatform.prototype = {
           if ( device.type == Constants.adDeviceSwitch && device.hasOwnProperty("type_ext") && device.type_ext == Constants.adDeviceDimmer){
             device.type = Constants.adDeviceDimmer;
             this.log("Device " + device.name + " changing to Dimmer");
+            this.isDimmerEnabled=true;
           }
 
           var existingAccessory = this.accessories.find(function (existingAccessory) {

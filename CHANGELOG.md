@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.3.6 (2024-10-13)
+### Featured Changes
+* Surpressed unimportant log message
+
 ## v0.3.5 (2024-10-12)
 ### Featured Changes
 * Must use AqualinkD 2.5.0 for the below to work.
