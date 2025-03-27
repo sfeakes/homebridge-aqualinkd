@@ -1,8 +1,13 @@
 # Change Log
 
+## v0.3.7 (2025-03-23)
+### Featured Changes
+* Added Heat Pump / Chiller support.
+* Changes for new repo location.
+
 ## v0.3.6 (2024-10-13)
 ### Featured Changes
-* Surpressed unimportant log message
+* Surpressed unimportant log message.
 
 ## v0.3.5 (2024-10-12)
 ### Featured Changes
